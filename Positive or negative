@@ -1,0 +1,19 @@
+ORG 0000H           ; Program starts at memory location 0000H
+
+MVI A, 80H          ; Load the 8-bit number (80H is an example) into the accumulator
+                    ; You can replace 80H with any 8-bit number to test
+
+RLC                 ; Rotate left the contents of the accumulator
+                    ; The MSB of the number moves into the carry flag
+
+JZ POSITIVE         ; If the carry is 0, the number is positive (MSB is 0)
+MVI B, 01H          ; If carry is 1, the number is negative (MSB is 1)
+JMP DONE            ; Jump to DONE
+
+POSITIVE:
+MVI B, 00H          ; If carry is 0, the number is positive
+
+DONE:
+HLT                 ; End of program, halt the processor
+
+END                 ; End of program
