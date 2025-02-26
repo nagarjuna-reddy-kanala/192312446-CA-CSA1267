@@ -1,0 +1,32 @@
+ORG 0000H               ; Program starts at memory location 0000H
+
+; Initialize the number for which we want to find the factorial
+MVI 30H, 05H            ; Store the number n = 5 at memory location 30H
+
+; Initialize the result in the accumulator (A)
+MVI A, 01H              ; A = 1 (factorial starts from 1)
+
+; Load the number n from memory location 30H
+MOV B, M                ; B = n (number for which factorial is calculated)
+
+; Loop to calculate the factorial
+FACT_LOOP:
+    MOV C, B            ; Copy the value of B into C
+    MUL_LOOP:
+        MOV A, C        ; Load the current number into A
+        CALL MUL         ; Multiply A (current factorial) by the current number in B
+        MOV B, M        ; Update B with the new value of B
+        DCR C            ; Decrement the value of C
+        JNZ MUL_LOOP     ; If C != 0, continue multiplication
+
+    DCR B                ; Decrement B (prepare next for multiplication)
+    JZ FACT_DONE         ; If B == 0, we are done
+    JMP FACT_LOOP        ; Continue to next iteration
+
+; Multiplication subroutine
+MUL:
+    MVI C, 01H            ; Temporary multiplier
+    MVI D, 00H            ; Clear D (for multiplication)
+    MVI E, M              ; Copy original value into memory to use for calculation
+
+multipletop: ; multiplication logic for making
