@@ -1,0 +1,46 @@
+ORG 0000H               ; Starting address of the program
+
+; Initialize the input numbers in memory locations 30H and 31H
+MVI 30H, 06H            ; First number = 06 (a)
+MVI 31H, 15H            ; Second number = 15 (b)
+
+; Copy numbers to registers for calculation
+MOV A, M                ; A = a (content of memory location 30H)
+MOV B, M                ; B = b (content of memory location 31H)
+
+; Step 1: Find the GCD of the two numbers using Euclidean algorithm
+MVI D, 00H              ; Clear register D (used for remainder)
+
+GCD_LOOP:  
+    MOV A, M            ; Load A with the first number
+    MOV C, M            ; Load C with the second number
+
+    CMP C               ; Compare A and C
+    JC SWAP             ; Jump to SWAP if A < C
+
+    SUB C               ; Subtract C from A
+    MOV M, A            ; Store result back in memory (new A)
+
+    MOV A, C            ; Load C into A
+    MOV C, M            ; Move new A to C
+
+    JZ END_GCD          ; If remainder is zero, GCD is found, jump to END_GCD
+
+SWAP:    
+    MOV D, A            ; Store A in D
+    MOV A, C            ; Load C into A
+    MOV C, D            ; Load D into C
+END_GCD:
+
+; Calculate LCM using the formula LCM(a,b) = (a * b) / GCD(a, b)
+MVI E, 00H              ; Clear register E (used for multiplication)
+MVI F, 00H              ; Clear register F (used for division)
+
+; Store GCD in register F for easy access during multiplication
+MOV F, M                ; Store GCD in F for reference
+
+LCM_CALC:
+    MOV A, F            ; Multiply numbers
+    ADD E                ; Add result
+    MOV D, A            ; Save result in D
+    ; Repeat calculation for debugging, but this is more for testing.
