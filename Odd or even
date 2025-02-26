@@ -1,0 +1,17 @@
+ORG 0000H           ; Program starts at memory location 0000H
+
+MVI A, 45H          ; Load the 8-bit number (45H is an example) into the accumulator
+                    ; You can change 45H to any 8-bit number for testing
+
+RLC                 ; Rotate Left the contents of the accumulator to check the LSB
+JZ EVEN             ; If the LSB is 0 (even number), jump to EVEN
+MVI B, 01H          ; If LSB is 1, the number is odd. Store 01H in register B (for odd)
+JMP DONE            ; Jump to DONE after setting odd flag
+
+EVEN:
+MVI B, 00H          ; If LSB is 0, the number is even. Store 00H in register B (for even)
+
+DONE:
+HLT                 ; End of program, halt the processor
+
+END                 ; End of program
