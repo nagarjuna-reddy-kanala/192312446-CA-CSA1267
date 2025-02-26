@@ -1,0 +1,46 @@
+ORG 0000H           ; Program starts at memory location 0000H
+
+; Initialize the numbers in memory
+MVI H, 30H          ; Set H to point to the start of the array (Memory location 30H)
+MVI L, 34H          ; Set L to point to the end of the array (Memory location 34H)
+
+; Array of numbers: 3, 2, 5, 4, 1 (stored at memory locations 30H to 34H)
+MVI 30H, 03H        ; First number = 3
+MVI 31H, 02H        ; Second number = 2
+MVI 32H, 05H        ; Third number = 5
+MVI 33H, 04H        ; Fourth number = 4
+MVI 34H, 01H        ; Fifth number = 1
+
+START:  
+    MVI D, 00H      ; Clear D register (used to store temporary value for swapping)
+    MVI E, 00H      ; Clear E register (used for comparisons)
+
+LOOP1:  
+    MOV A, M        ; Load the current element (pointed by HL) into accumulator A
+    INX H           ; Move to the next element
+    MOV B, M        ; Load the next element into register B
+
+    ; Compare the two adjacent elements
+    CMP B           ; Compare A with B
+    JZ NEXT         ; If A == B, jump to NEXT (no swap needed)
+    
+    ; Swap the elements if A < B (for descending order)
+    MOV D, A        ; Store the value of A in D
+    MOV A, B        ; Move B into A
+    MOV E, A        ; Store the value of A in E
+    MOV B, D        ; Move D back to B (store the original value of A)
+
+    MOV M, A        ; Store A (which is now the larger value) back in the array
+    INX H           ; Move to the next element
+    MOV M, B        ; Store B (which is the smaller value) back in the array
+
+NEXT:
+    INX H           ; Move to the next element
+    MOV A, H        ; Load H register into A
+    MOV B, L        ; Load L register into B
+    CMP B           ; Compare H with L
+    JNZ LOOP1       ; If H is not equal to L, repeat the loop (array is not sorted)
+
+HLT                 ; End of the program
+
+END                 ; End of the program
