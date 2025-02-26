@@ -1,0 +1,40 @@
+ORG 0000H               ; Starting address of the program
+
+; Initialize the input numbers in memory locations 30H and 31H
+MVI 30H, 24H            ; First number = 24 (a)
+MVI 31H, 36H            ; Second number = 36 (b)
+
+; Step 1: Load the two numbers into registers for calculation
+MOV A, M                ; A = a (content of memory location 30H)
+MOV B, M                ; B = b (content of memory location 31H)
+
+GCD_LOOP:  
+    MOV A, M            ; Load A with the first number (a)
+    MOV C, M            ; Load C with the second number (b)
+
+    CMP C               ; Compare A and C
+    JC SWAP             ; Jump to SWAP if A < C
+
+    SUB C               ; Subtract C from A
+    MOV M, A            ; Store result back in memory (new A)
+
+    MOV A, C            ; Load C into A
+    MOV C, M            ; Move new A to C
+
+    JZ END_GCD          ; If remainder is zero, GCD is found, jump to END_GCD
+
+SWAP:    
+    MOV D, A            ; Store A in D (for swapping)
+    MOV A, C            ; Load C into A
+    MOV C, D            ; Load D into C (swap A and C)
+
+    JZ END_GCD          ; If remainder is zero, GCD is found
+
+    JMP GCD_LOOP        ; Repeat the loop
+
+END_GCD: 
+    MOV A, M            ; The final value of M is the GCD
+
+HLT                     ; End of program
+
+END                     ; End of program
