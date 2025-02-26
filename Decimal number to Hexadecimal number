@@ -1,0 +1,46 @@
+ORG 0000H                ; Program starts at memory location 0000H
+
+; Initialize the decimal number to be converted (example: 255)
+MVI 30H, 0FFH            ; Store decimal number (255) at memory location 30H
+
+; Initialize variables
+MVI D, 00H               ; Clear D (used to store the quotient)
+MVI E, 00H               ; Clear E (used to store the remainder)
+MVI H, 40H               ; Starting memory address for storing hexadecimal digits (40H)
+
+; Start the division by 16
+CONVERT:
+    MOV A, M             ; Load the decimal number (current value) into A
+    MVI B, 10H           ; Load B with 16 (used for division)
+    CALL DIVIDE16        ; Call subroutine to divide by 16
+
+    MOV M, E             ; Store the remainder (hex digit) at the memory location (starting at 40H)
+    INX H                ; Move to the next memory location to store next digit
+
+    MOV A, D             ; Move quotient (A) into D to check if it's 0
+    JZ END_CONVERSION    ; If quotient is 0, conversion is complete, jump to END_CONVERSION
+
+    MOV M, A             ; Store the quotient back in memory to continue the next iteration
+    JMP CONVERT          ; Repeat the division process
+
+; Division by 16 subroutine (DIVIDE16)
+DIVIDE16:
+    MVI C, 00H           ; Clear the carry
+    MOV A, M             ; Move the value from memory to A
+    CALL DIVIDE16SINGLE  ; Subroutine to divide by 16
+
+    MOV E, C             ; Store remainder in E (remainder becomes hexadecimal digit)
+    MOV D, A             ; Store quotient in D
+    RET                  ; Return from subroutine
+
+; Divide by 16 subroutine (Single division operation)
+DIVIDE16SINGLE:
+    MVI B, 10H           ; Load B with 16
+    MVI C, 00H           ; Clear carry flag
+    MOV A, M             ; Load the current value of memory into A
+    CALL DIVIDE16RESULT  ; Perform division and store results
+
+    MOV C, D             ; Store the value in register C (remainder after divide)
+
+END_CONVERSION:
+    HLT                  ; End the program
